@@ -1,0 +1,9 @@
+.review-projects-disply{
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.checked-box{
+    margin: 10px;
+    padding: 10px;
+}
