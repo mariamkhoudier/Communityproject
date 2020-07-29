@@ -3,7 +3,6 @@
     flex-wrap: wrap;
 }
 
-.checked-box{
-    margin: 10px;
-    padding: 10px;
+.commentsContainer{
+    margin-top: 5px;
 }

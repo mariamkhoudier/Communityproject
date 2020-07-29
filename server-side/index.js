@@ -82,7 +82,7 @@ async function initServer()
             res.json({status:500,message:error.message});
         }
     });
-    server.post('/projects/pendding',async(req,res)=>{
+    server.post('/projects/pending',async(req,res)=>{
         try{
             let projects = await storage.valuesWithKeyMatch(/project-/);
             let searchTerm = req.body.searchTerm.trim();
@@ -147,7 +147,7 @@ async function initServer()
                     let now = new Date();
                     let today = now.toISOString().slice(0,10);
                     let time = today + " " + now.toLocaleTimeString();
-                    let approvedProject={id:key,votes:"0",timeUpdated:time,details:project.value};
+                    let approvedProject={id:key,votes:"0",comments:[],timeUpdated:time,details:project.value};
                     await storage.setItem(`projectApproved-${key}`,approvedProject);
                 }
                 res.json({status:200,data:project});
@@ -158,6 +158,48 @@ async function initServer()
         catch(error)
         {
             res.json({status:500,message:error.message});
+        }
+    });
+    server.put("/approved-projects/Comments/:id", async (req, res) => {
+
+        try {
+
+            let key = req.params.id;
+
+            let project = await storage.getItem(`projectApproved-${key}`);
+            let comment = req.body.comment;
+            if (comment !== "") {
+                let words = ["crikey", "fart", "silly", "dumb"];
+                let bol = false;
+                for(let i=0; i<words.length;i++)
+                 {
+                    if (req.body.comment.toLowerCase().includes(words[i])) {
+                        bol = true;
+                        break;
+                    }
+                    else {
+                        bol = false;
+                    }
+                 }
+
+                if (bol) {
+                    res.json({ status: 500, message: "error." })
+                }
+                else {
+                    project.comments.push(comment);
+
+                    await storage.updateItem(`projectApproved-${key}`, project);
+                    res.json({ status: 200, data: project });
+
+                }
+
+            }
+            else {
+                res.json({ status: 500, message: "you should add comments" });
+            }
+        }
+        catch (error) {
+            res.json({ status: 500, message: error.message });
         }
     });
     server.get('/approved-projects',async(req,res)=>{
@@ -198,14 +240,47 @@ async function initServer()
         }
         catch(error)
         {
-            res.json({status:500,message:error.message})
+            res.json({status:500,message:error.message});
         }
     });
-
+    server.post("/public-can-vote",async(req,res)=>{
+        try{
+            let canVote=req.body.canVote;
+            await storage.setItem("vote-1",{canVote});
+            res.json({data:{canVote},status:200})
+        }
+        catch(error)
+        {
+            res.json({status:500,message:error.message});
+        }
+    });
+    server.get("/public-can-vote",async(req,res)=>{
+        try{
+            let result= await storage.getItem("vote-1");
+            res.json({data:result,status:200})
+        }
+        catch(error)
+        {
+            res.json({status:500,message:error.message});
+        }
+    });
+    server.put("/public-can-vote",async(req,res)=>{
+        try{
+            let result = await storage.getItem("vote-1");
+            (result.canVote > 0)? result.canVote = 0 : result.canVote = 1 ;
+            await storage.updateItem("vote-1",result);
+            res.json({data:result,status:200});
+        }
+        catch(error)
+        {
+            res.json({status:500,message:error.message});
+        }
+    });
     const PORT = 4000; 
     server.listen(PORT,()=>{
         console.log('The server is up and running and listening on port ' + PORT); 
     });
+
 }
 
 initStorage().then(()=> initServer());

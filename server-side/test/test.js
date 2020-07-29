@@ -168,10 +168,35 @@ describe('test projects env',()=>{
                 done();
             })
         })
-    })
+    });
+    describe("test comments ",()=>{
+        it("should add comments to the array",(done)=>{
+            let data={
+                comment:"comment"
+            }
+            chai.request(server)
+            .put('/approved-projects/comments/')
+            .send(data)
+            .end((err,res)=>{
+                res.body.should.have.status(200);
+                res.body.data.comments.should.be.a('array');
+                done();
+            })
+        })
+        it("should not do the put if the comment is empty",(done)=>{
+            let data={
+                comment:""
+            }
+            chai.request(server)
+            .put('/approved-projects/comments/')
+            .send(data)
+            .end((err,res)=>{
+                res.body.should.have.status(500);
+                done();
+            })
+        })
+    });
 });
-
-
 
 
 

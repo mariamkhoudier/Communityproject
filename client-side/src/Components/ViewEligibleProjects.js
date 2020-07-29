@@ -1,17 +1,14 @@
 import React, {useEffect, useState} from "react"
-import Navbar from "react-bootstrap/Navbar";
-import Nav from "react-bootstrap/Nav";
-import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import Card from "react-bootstrap/Card";
 import "../review.css";
 import bgimage from '../photo-1.png';
-import {useParams} from "react-router-dom";
+
 
 export default function ViewEligibleProgicts()
 {
+    
     const[projects,setprojects]=useState([]);
-    let {canvote} = useParams();
     useEffect(()=>{
         fetch("http://localhost:4000/approved-projects")
         .then(response => response.json())
@@ -27,28 +24,14 @@ export default function ViewEligibleProgicts()
     },[projects])
     return(
         <div>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/"><img src="https://www.service.nsw.gov.au/themes/snsw_theme/images/servicensw-logo.png" height="30" alt="React Bootstrap logo" /></Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                    <Nav.Link href="/">Home</Nav.Link>
-                    <Nav.Link href="/addProject">Submit an idea</Nav.Link>
-                    <Nav.Link href="/viewProjects" >View Projects</Nav.Link>
-                    </Nav>
-                    <Form inline>
-                    { canvote && <Button onClick={()=>{window.location.href="/reviewProjects"}}  variant="outline-success">Admin Login</Button> }
-                    </Form>
-                </Navbar.Collapse>
-            </Navbar>
-            <div class="jumbotron" style={{ backgroundImage: `url(${bgimage})`, backgroundSize:'cover',height:"500px" }}>
+            <div className="jumbotron" style={{ backgroundImage: `url(${bgimage})`, backgroundSize:'cover',height:"100%" }}>
                 <h1 style={{color:"white"}}>My Community Project</h1>
                 <br></br>
-                <p style={{color:"white"}}>       My Community Project is all about local ideas, local projects and local decisions.          </p>
+                <p style={{color:"white"}}>My Community Project is all about local ideas, local projects and local decisions.</p>
                 <br></br>
+                <div style={{display:"flex" , flexWrap:"wrap"}}>
+                {projects && projects.map(p => <ViewProject key={p.id} p={p}/>)}
             </div>
-            <div style={{display:"flex" , flexWrap:"wrap"}}>
-                {projects && projects.map(p => <ViewProject p={p}/>)}
             </div>
         </div>
     );
@@ -56,6 +39,21 @@ export default function ViewEligibleProgicts()
 
 function ViewProject(props)
 {
+    const[canVote,setCanVote]=useState();
+    useEffect(()=>{
+        fetch("http://localhost:4000/public-can-vote")
+        .then(response => response.json())
+        .then(json =>{
+            if(json.status === 200)
+            {
+                setCanVote(json.data.canVote);
+            }
+            else{
+                alert("error fetching vote data from the server");
+            }
+        })
+    },[canVote]);
+    
     function sendVoteRequest(e)
     {
         e.preventDefault();
@@ -76,6 +74,7 @@ function ViewProject(props)
     }
     return(
         <div>
+            
             <Card style={{ width: '18rem', margin: "10px" }}>
                     <Card.Body>
                         <Card.Title><strong>Title: </strong>{props.p.details.title}</Card.Title>
@@ -91,7 +90,8 @@ function ViewProject(props)
                         <Card.Text>
                             <strong>Votes: </strong> {props.p.votes}
                         </Card.Text>
-                        <Button variant="success" onClick={sendVoteRequest}>Vote</Button>
+                        { canVote > 0 && <Button variant="success" onClick={sendVoteRequest}>Vote</Button> }
+                        <Button style={{display:"block" , marginTop:"5px"}} variant="danger" onClick={()=>{window.location.href=`/comment/${props.p.id}`}} >Comments</Button>
                     </Card.Body>
             </Card>
         </div>

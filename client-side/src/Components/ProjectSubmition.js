@@ -6,8 +6,6 @@ import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import Button from "react-bootstrap/Button"
 import '../submitForm.css';
-import Navbar from 'react-bootstrap/Navbar';
-import Nav from 'react-bootstrap/Nav';
 import bgimage from '../photo-3.png';
 export default function ProjectSubmition()
 {
@@ -42,27 +40,12 @@ export default function ProjectSubmition()
 
     return(
         <div>
-            <Navbar bg="light" expand="lg">
-                <Navbar.Brand href="/"><img src="https://www.service.nsw.gov.au/themes/snsw_theme/images/servicensw-logo.png" height="30" alt="React Bootstrap logo" /></Navbar.Brand>
-                <Navbar.Toggle aria-controls="basic-navbar-nav" />
-                <Navbar.Collapse id="basic-navbar-nav">
-                    <Nav className="mr-auto">
-                    <Nav.Link href="/">Home</Nav.Link>
-                    <Nav.Link href={url}>Submit an idea</Nav.Link>
-                    <Nav.Link href="/viewProjects" >View Projects</Nav.Link>
-                    </Nav>
-                    <Form inline>
-                    <Button onClick={()=>{window.location.href="/reviewProjects"}} variant="outline-success">Admin Login</Button>
-                    </Form>
-                </Navbar.Collapse>
-            </Navbar>
-            <div class="jumbotron" style={{ backgroundImage: `url(${bgimage})`, backgroundSize:'cover',height:"500px" }}>
+            <div className="jumbotron" style={{ backgroundImage: `url(${bgimage})`, backgroundSize:'cover',height:"100%" }}>
                 <h1>My Community Project</h1>
                 <br></br>
                 <p>       My Community Project is all about local ideas, local projects and local decisions.          </p>
                 <br></br>
-            </div>
-            <div className="submit-form">
+                <div className="submit-form">
                 <Form>
                     <Row className="mt-3">
                     <Col>
@@ -83,7 +66,7 @@ export default function ProjectSubmition()
                     <Row className="mt-3">
                         <Col>
                             <label className="text-primary">PROJECT Description *</label>
-                            <Form.Control as="textarea" rows="3" placeholder="please enter description for your project (max 500 characters)"  value={description} onChange={(event)=>{setdDescription(event.target.value)}} required />
+                            <Form.Control as="textarea" maxLength="300" rows="3" placeholder="please enter description for your project (max 500 characters)"  value={description} onChange={(event)=>{setdDescription(event.target.value)}} required />
                         </Col>
                     </Row>
                     <Row className="mt-3">
@@ -92,7 +75,9 @@ export default function ProjectSubmition()
                         </Col>
                     </Row>
                 </Form>      
-            </div>     
+            </div> 
+            </div>
+                
         </div>
     );
 }
