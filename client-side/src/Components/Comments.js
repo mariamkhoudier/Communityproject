@@ -74,22 +74,22 @@ export default function Comments() {
                             </div>)
                     }
                 </div>
-                <div className="mx-auto" style={{ 'overflow-y': 'scroll', height: '400px' }}>
+                <div className="mx-auto" style={{ 'overflowY': 'scroll', height: '400px' }}>
                     {
                         approvedProject && (
                             <div className="commentsContainer">
-                                {approvedProject.comments && approvedProject.comments.map(comment =>
-                                    <div className="alert alert-dark" >{comment}</div>
+                                {approvedProject.comments && approvedProject.comments.map((comment, index) =>
+                                    <div key={index} className="alert alert-dark" >{comment}</div>
                                 )}
                             </div>
                         )
                     }
-                    <div ref={divRref} />
+                <div ref={divRref}></div>
                 </div>
-                <div class="input-group commentsContainer">
-                    <textarea maxLength="50" value={comment} onChange={(event) => setComment(event.target.value)} class="form-control" placeholder="Please add your comment here!!" aria-label="With textarea"></textarea>
-                    <div class="input-group-prepend">
-                        <Button variant="danger" onClick={() => addComment()} class="input-group-text">Add Comment</Button>
+                <div className="input-group commentsContainer">
+                    <textarea maxLength="50" value={comment} onChange={(event) => setComment(event.target.value)} className="form-control" placeholder="Please add your comment here!!" aria-label="With textarea"></textarea>
+                    <div className="input-group-prepend">
+                        <Button variant="danger" onClick={() => addComment()} className="input-group-text">Add Comment</Button>
                     </div>
                 </div>
             </div>

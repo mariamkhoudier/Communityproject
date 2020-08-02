@@ -67,7 +67,7 @@ export default function App() {
       </Router>
       <Jumbotron fluid>
                 <Container>
-                    <div class="social-container">
+                    <div className="social-container">
                         <h1>CONTACT US</h1>
                         <p><a href="https://www.service.nsw.gov.au/contact-us">Contact form</a></p>
                         <p><a href="https://www.service.nsw.gov.au/contact-us">Phone 13 77 88</a></p>
